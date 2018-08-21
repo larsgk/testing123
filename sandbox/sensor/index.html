@@ -1,0 +1,42 @@
+<html>
+<head>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"> </script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/cfe5f316/dist/aframe-extras.js"></script>
+    
+    <style>
+        #arjsDebugUIContainer {
+            display: none;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1.5rem;
+            background: rgba(0,0,20,0.3);
+        }
+    </style>
+</head>
+<body>
+    <a-scene embedded arjs='sourceType: webcam; patternRatio: 0.75' vr-mode-ui='enabled: false'>
+        <a-marker id="plant" preset='custom' type='pattern' url='./plant.patt'>
+            <a-box color="#ffffff" depth="0.1" height="0.1" width="4" position="0 0.05 -1.5"></a-box>
+            <a-box color="#ffffff" depth="0.1" height="0.1" width="4" position="0 0.05 1.5"></a-box>
+            <a-box color="#ffffff" depth="3" height="0.1" width="0.1" position="-2 0.05 0"></a-box>
+            <a-box color="#ffffff" depth="3" height="0.1" width="0.1" position="2 0.05 0"></a-box>
+            <!-- <a-plane material="src: blueprint.png" position="0 0 0" rotation="-90 0 0" width="4" height="3" color="#7BC8A4" transparent="true" opacity="0.5"></a-plane> -->
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+    <div class="controls">
+        <button id="scanbtn">Scan for Thingy52</button> 
+    </div>
+</body>
+<script type="module">
+    import {init} from './main.js';
+    init();
+</script>
+<!-- load the code here... -->
+</html>
