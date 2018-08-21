@@ -15,7 +15,12 @@
             <a-asset id="airplane_engine" src="./jet_engine_for_3d_printing/scene.gltf"></a-asset>
             <a-asset id="steam_engine" src="./steam_engine/scene.gltf"></a-asset>
             <a-asset id="solar_panel" src="./solarpanel/scene.gltf"></a-asset>
+            <a-asset id="gold_statue" src="./buddha_pbr/scene.gltf"></a-asset>
         </a-assets>
+        <a-marker preset='custom' type='pattern' url='./key.patt'>
+            <a-entity id="gold_statue1" gltf-model="#gold_statue" position="0 0.8 -1.3" scale="0.12 0.12 0.12">
+            </a-entity>
+        </a-marker>
         <a-marker preset='custom' type='pattern' url='./plane.patt'>
             <a-entity id="airplane_engine1" gltf-model="#airplane_engine" position="0 2 0" scale="0.04 0.04 0.04">
             </a-entity>
