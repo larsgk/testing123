@@ -6,6 +6,14 @@
         #arjsDebugUIContainer {
             display: none;
         }
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1.5rem;
+            background: rgba(0,0,20,0.3);
+        }
     </style>
 </head>
 <body>
@@ -13,8 +21,8 @@
         <a-assets>
             <a-asset id="old_v8" src="./old_v8/scene.gltf"></a-asset>
         </a-assets>
-        <a-marker preset='custom' type='pattern' url='./factory.patt'>
-            <a-entity id="old_v81" gltf-model="#old_v8" position="0 0.5 0" scale="0.5 0.5 0.5">
+        <a-marker id="viz" preset='custom' type='pattern' url='./factory.patt'>
+            <a-entity id="old_v81" gltf-model="#old_v8" position="0 0.5 0.1" scale="0.6 0.6 0.6">
             </a-entity>
         </a-marker>
         <!-- <a-marker id="plant" preset='custom' type='pattern' url='./plant.patt'>
@@ -26,47 +34,12 @@
         </a-marker> -->
     <a-entity camera></a-entity>
 </a-scene>
+<div class="controls">
+    <button id="scanbtn">Scan for Thingy52</button> 
+</div>
 </body>
-<script>
-    // let plant = null;
-    
-    // document.querySelector('a-scene').addEventListener('loaded', () => {
-    //     plant = document.querySelector("#plant");
-        
-    //     addBar(1, 1, '#ff0000', 0.1, 1.2, 0.05);
-    //     addBar(-1, 1, '#ffff00', 0.1, 0.8, 0.02);
-    //     addBar(1, -1, '#00dd00', 0.1, 1.0, 0.01);
-    //     addBar(-1, -1, '#eeeeee', 0.1, 0.5, 0.03);
-    // });
-    
-    // function addBar(x,z,color,min,max,step) {
-    //     if(!plant)return;
-        
-    //     let height = min;
-    //     let goingUp = true;
-        
-    //     let bar = document.createElement('a-cylinder');
-    //     bar.setAttribute('position', `${x} ${height/2} ${z}`);
-    //     bar.setAttribute('radius','0.2');
-    //     bar.setAttribute('color',color);
-    //     bar.setAttribute('transparent','true');
-    //     bar.setAttribute('opacity','0.6');
-        
-    //     let barlbl = document.createElement('a-text');
-    //     barlbl.setAttribute('position', `${x+0.25} 0.2 ${z}`);
-    //     barlbl.setAttribute('value', height);
-        
-    //     plant.appendChild(bar);
-    //     plant.appendChild(barlbl);
-        
-    //     window.setInterval(() => {
-    //         bar.setAttribute("height", height);
-    //         bar.setAttribute("position", `${x} ${height/2} ${z}`);
-    //         barlbl.setAttribute("value", height.toFixed(1));
-    //         height += goingUp ? step : -step;
-    //         if(goingUp && height >= max) goingUp = false;
-    //         if(!goingUp && height <= min) goingUp = true;
-    //     }, 50);
-    // }
+<script type="module">
+    import {init} from './main.js';
+    init();
 </script>
 </html>
