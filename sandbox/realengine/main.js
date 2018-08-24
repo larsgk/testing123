@@ -23,6 +23,21 @@ const accu = {
     z: 0
 }
 
+function toggleFullScreen() {
+    var doc = window.document;
+    var docEl = doc.documentElement;
+  
+    var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+    var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+  
+    if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+      requestFullScreen.call(docEl);
+    }
+    else {
+      cancelFullScreen.call(doc);
+    }
+}
+
 export function init() {
     console.log("Init main");
 
@@ -47,7 +62,7 @@ export function init() {
     scanbtn.addEventListener('click', () => thingy52.scan());
 
     const fullscreenbtn = document.querySelector("#fullscreenbtn");
-    fullscreenbtn.addEventListener('click', () => { document.documentElement.requestFullscreen(); });
+    fullscreenbtn.addEventListener('click', () => { toggleFullScreen(); });
     
     let oldx=0,oldy=0,oldz=0;
 
