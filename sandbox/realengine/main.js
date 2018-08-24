@@ -46,6 +46,9 @@ export function init() {
     console.log(scanbtn, thingy52);
     scanbtn.addEventListener('click', () => thingy52.scan());
 
+    const fullscreenbtn = document.querySelector("#fullscreenbtn");
+    fullscreenbtn.addEventListener('click', () => { document.documentElement.requestFullscreen(); });
+    
     let oldx=0,oldy=0,oldz=0;
 
     thingy52.addEventListener('data', e => {
