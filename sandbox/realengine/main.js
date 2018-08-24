@@ -29,9 +29,9 @@ export function init() {
     viz = document.querySelector("#viz");
     graph = document.querySelector("#graph");
     
-    const accelx = addBubble(1, -0.5, -1.5, '#00ff00');
-    const accely = addBubble(0, -0.5, -1.5, '#00ff00');
-    const accelz = addBubble(-1, -0.5, -1.5, '#00ff00');
+    const accelx = addBubble(1, -0.8, -1.3, '#00ff00');
+    const accely = addBubble(0, -0.8, -1.3, '#00ff00');
+    const accelz = addBubble(-1, -0.8, -1.3, '#00ff00');
 
     addGuide('zero_guide', {min:0,name:"ZERO"});
     addPen('x', {color:'#ff0000', name:'x', lineWidth:3});
