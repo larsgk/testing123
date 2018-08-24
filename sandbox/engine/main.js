@@ -17,24 +17,36 @@ const drawdata = {
     running: true
 };
 
+const accu = {
+    x: 0,
+    y: 0,
+    z: 0
+}
+
 export function init() {
     console.log("Init main");
 
     viz = document.querySelector("#viz");
     graph = document.querySelector("#graph");
     
-    const accelx = addBubble(1, 1, 0.9, '#ff0000');
+    const accelx = addBubble(1, 1, 0.9, '#00ff00');
     const accely = addBubble(1, 1, -1, '#00ff00');
-    const accelz = addBubble(-1, 1, 0.9, '#0000ff');
+    const accelz = addBubble(-1, 1, 0.9, '#00ff00');
 
     addGuide('zero_guide', {min:0,name:"ZERO"});
     addPen('x', {color:'#ff0000', name:'x', lineWidth:3});
     addPen('y', {color:'#00ff00', name:'y', lineWidth:3});
     addPen('z', {color:'#0000ff', name:'z', lineWidth:3});
 
+    addPen('accux', {color:'#ff8080', name:'accux', lineWidth:1});
+    addPen('accuy', {color:'#80ff80', name:'accuy', lineWidth:1});
+    addPen('accuz', {color:'#8080ff', name:'accuz', lineWidth:1});
+
     const scanbtn = document.querySelector("#scanbtn");
     console.log(scanbtn, thingy52);
     scanbtn.addEventListener('click', () => thingy52.scan());
+
+    let oldx=0,oldy=0,oldz=0;
 
     thingy52.addEventListener('data', e => {
         const data = e.detail.data;
@@ -42,15 +54,36 @@ export function init() {
         if(!data) return;
 
         if(data.type === 'temperature') {
-            // updateBar(temperature, data.value);
+            document.querySelector("#temperaturelbl").setAttribute('value',`${data.value.toFixed(1)} C`);
         } else if(data.type === 'acceleration') {
-            accelx.setAttribute('radius',`${Math.abs(data.value.x/20)}`);
-            accely.setAttribute('radius',`${Math.abs(data.value.y/20)}`);
-            accelz.setAttribute('radius',`${Math.abs(data.value.z/20)}`);
-
             addValue('x', data.value.x);
             addValue('y', data.value.y);
             addValue('z', data.value.z);
+
+            accu.x += Math.abs(data.value.x-oldx);
+            accu.y += Math.abs(data.value.y-oldy);
+            accu.z += Math.abs(data.value.z-oldz);
+
+            if(accu.x > 20) accu.x = 20;
+            if(accu.y > 20) accu.y = 20;
+            if(accu.z > 20) accu.z = 20;
+
+            oldx = data.value.x;
+            oldy = data.value.y;
+            oldz = data.value.z;
+            
+            accu.x *= 0.9;
+            accu.y *= 0.9;
+            accu.z *= 0.9;
+
+            addValue('accux', accu.x);
+            addValue('accuy', accu.y);
+            addValue('accuz', accu.z);
+
+            updateBubble(accelx, accu.x);
+            updateBubble(accely, accu.y);
+            updateBubble(accelz, accu.z);
+
         }
     });
 
@@ -80,10 +113,9 @@ export function init() {
 function addBubble(x,y,z,color) {
     if(!viz)return;
     
-    
     let bubble = document.createElement('a-sphere');
     bubble.setAttribute('position', `${x} ${y} ${z}`);
-    bubble.setAttribute('radius','0.5');
+    bubble.setAttribute('radius','0.2');
     bubble.setAttribute('color',color);
     bubble.setAttribute('transparent','true');
     bubble.setAttribute('opacity','0.6');
@@ -91,6 +123,19 @@ function addBubble(x,y,z,color) {
     viz.appendChild(bubble);
 
     return bubble;
+}
+
+function updateBubble(bubble, value) {
+    if(value < 0.5) {
+        bubble.setAttribute('radius', '0.2');
+        bubble.setAttribute('color', '#00ff00');
+    } else if(value < 2) {
+        bubble.setAttribute('radius', '0.3');
+        bubble.setAttribute('color', '#ffff00');
+    } else {
+        bubble.setAttribute('radius', '0.5');
+        bubble.setAttribute('color', '#ff0000');
+    }
 }
 
 
