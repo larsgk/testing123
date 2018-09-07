@@ -1,0 +1,24 @@
+<html>
+<head>
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        #controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background: rgba(0,0,20,0.3);
+        }
+    </style>
+</head>
+<body>
+<div id="controls">
+    <button id="fullscreenbtn">Fullscreen</button> 
+</div>
+</body>
+<script type="module">
+    import {init} from './main.js';
+    init();
+</script>
+</html>
