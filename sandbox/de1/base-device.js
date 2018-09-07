@@ -54,6 +54,20 @@ export class BaseDevice extends EventTarget {
         this.dispatchEvent(new CustomEvent('debug-data', {detail: data}));
     }
 
+    emitDebugAlertLevel(level) {
+        this.dispatchEvent(new CustomEvent('debug-alert-level', {detail: level}));
+    }
+
+
+    setAlertLevel(level) {
+        this._alertLevel = level;
+        const alertVal = _alertLevels[level];
+
+        if(alertVal && this._setRGB !== undefined) {
+            this._setRGB(alertVal.color);
+        }
+    }
+
     // mesh functions
     // defcon related functions
 }

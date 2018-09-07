@@ -1,5 +1,6 @@
 // @ts-check
 import { Thing52Factory } from './thingy52-factory.js';
+import { EmpiriKitFactory } from './empirikit-factory.js';
 
 /**
  * owns devices
@@ -15,9 +16,11 @@ export class FakeMesh extends EventTarget {
         this.onConnect = this.onConnect.bind(this);
         this.onDisconnect = this.onDisconnect.bind(this);
         this.onDebugData = this.onDebugData.bind(this);
+        this.onDebugAlertLevel = this.onDebugAlertLevel.bind(this);
 
         this.factories = new Map();
         this.factories.set(Thing52Factory.type, Thing52Factory);
+        this.factories.set(EmpiriKitFactory.type, EmpiriKitFactory);
 
         for(let factory of this.factories.values()) {
             factory.addEventListener('connect', this.onConnect);
@@ -49,6 +52,7 @@ export class FakeMesh extends EventTarget {
 
         device.addEventListener('disconnect', this.onDisconnect);
         device.addEventListener('debug-data', this.onDebugData);
+        device.addEventListener('debug-alert-level', this.onDebugAlertLevel);
 
         device.initialize();
         
@@ -69,6 +73,16 @@ export class FakeMesh extends EventTarget {
 
         if(["temperature","button"].includes(evt.detail.type)) {
             console.log(device,evt.detail);
+        }
+    }
+
+    onDebugAlertLevel(evt) {
+        const device = evt.target;
+
+        const level = evt.detail;
+
+        for(let device of this.devices.values()) {
+            device.setAlertLevel(level);
         }
     }
 

@@ -1,7 +1,7 @@
 // @ts-check
 import { Thingy52Device } from './thingy52-device.js'
 
-class _Thingy52Factory extends EventTarget {
+class _Factory extends EventTarget {
     constructor() {
         super();
         this.type = "Thingy52";
@@ -32,6 +32,6 @@ class _Thingy52Factory extends EventTarget {
     }    
 }
 
-const _instance = new _Thingy52Factory();
+const _instance = new _Factory();
 
 export const Thing52Factory = _instance;

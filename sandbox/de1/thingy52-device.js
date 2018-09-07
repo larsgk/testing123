@@ -5,6 +5,8 @@ export class Thingy52Device extends BaseDevice {
     constructor(btDevice) {
         super('Thingy52');
 
+        this.initialize = this.initialize.bind(this);
+
         this._btDevice = btDevice;
         this.deviceId = `${this.deviceType}:${this._btDevice.id}`;
 
@@ -69,7 +71,9 @@ export class Thingy52Device extends BaseDevice {
     
         const buttonPressed = target.value.getUint8(0) === 1;
 
-        this.emitDebugData({type: 'button', value: buttonPressed});    
+        this.emitDebugData({type: 'button', value: buttonPressed});
+
+        this.emitDebugAlertLevel(buttonPressed ? 4 : 1);
     }
 
     _setRGB(value) {
