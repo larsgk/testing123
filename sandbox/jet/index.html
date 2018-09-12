@@ -1,0 +1,56 @@
+<html>
+<head>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"> </script>
+    <script src="./heat-map.js"> </script>
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        #arjsDebugUIContainer {
+            display: none;
+        }
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background: rgba(0,0,20,0.3);
+        }
+        #graph {
+            width: 100vw;
+            height: 20vh;
+            background:transparent;
+        }
+    </style>
+</head>
+<body>
+    <a-scene embedded arjs='sourceType: webcam; patternRatio: 0.75' vr-mode-ui='enabled: false'>
+        <a-assets>
+                <canvas id="helloWorldCanvas" crossOrigin="anonymous"></canvas>
+        </a-assets>
+        <a-marker id="viz" preset='custom' type='pattern' url='./pattern-marker-1.patt'>
+            <a-sphere position="-3.6 0 0" radius="0.2" color="red" opacity="0.5"></a-sphere>
+            <a-sphere position=" 2.8 0 0" radius="0.2" color="red" opacity="0.5"></a-sphere>
+            <!-- <a-text id="temperaturelbl" rotation="-90 0 0" position="1 0 0" color="black" scale="2 2 2" value="- C XXXX"></a-text> -->
+            <!-- <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 1.55; radius-top: 1.05; height: 2.9; open-ended: true" opacity="0.5" position="-2.4 -1.3 -0.08" rotation="0 -3 80" heat-map="#helloWorldCanvas"></a-entity> -->
+            <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 2; radius-top: 1.05; height: 6; open-ended: true" opacity="0.5" position="-0.7 -1.525 -0.08" rotation="0 -2 80" heat-map="#helloWorldCanvas"></a-entity>
+        </a-marker>
+        <a-marker id="viz2" preset='custom' type='pattern' url='./pattern-marker-2.patt'>
+            <a-sphere position="-2.8 0 0" radius="0.2" color="blue" opacity="0.5"></a-sphere>
+            <a-sphere position=" 3.6 0 0" radius="0.2" color="blue" opacity="0.5"></a-sphere>
+            <!-- <a-text id="marker2lbl" rotation="-90 0 0" position="1 0 0" color="black" scale="2 2 2" value="BLAH BLAH"></a-text> -->
+            <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 1.05; radius-top: 2; height: 6; open-ended: true" opacity="0.5" position="0.7 -1.525 -0.08" rotation="0 2 100" heat-map="#helloWorldCanvas"></a-entity>
+            </a-marker>
+    <a-entity camera></a-entity>
+</a-scene>
+<div class="controls">
+    <canvas id="graph" width="100" height="100"></canvas>
+    <button id="scanbtn">Scan for Thingy52</button> 
+    <button id="fullscreenbtn">Fullscreen</button> 
+</div>
+</body>
+<script type="module">
+    import {init} from './main.js';
+    //init();
+</script>
+</html>
