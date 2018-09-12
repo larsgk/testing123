@@ -2,7 +2,9 @@
 <head>
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"> </script>
-    <script src="./heat-map.js"> </script>
+    <script src="./heat-map-a.js"> </script>
+    <script src="./heat-map-b.js"> </script>
+    <script src="./billboard.js"> </script>
     <meta name="mobile-web-app-capable" content="yes">
     <style>
         #arjsDebugUIContainer {
@@ -26,20 +28,28 @@
 <body>
     <a-scene embedded arjs='sourceType: webcam; patternRatio: 0.75' vr-mode-ui='enabled: false'>
         <a-assets>
-                <canvas id="helloWorldCanvas" crossOrigin="anonymous"></canvas>
+                <canvas id="heatMapCanvas1" width="512" height="512" crossOrigin="anonymous"></canvas>
+                <canvas id="heatMapCanvas2" width="512" height="512" crossOrigin="anonymous"></canvas>
         </a-assets>
         <a-marker id="viz" preset='custom' type='pattern' url='./pattern-marker-1.patt'>
-            <a-sphere position="-3.6 0 0" radius="0.2" color="red" opacity="0.5"></a-sphere>
-            <a-sphere position=" 2.8 0 0" radius="0.2" color="red" opacity="0.5"></a-sphere>
-            <!-- <a-text id="temperaturelbl" rotation="-90 0 0" position="1 0 0" color="black" scale="2 2 2" value="- C XXXX"></a-text> -->
-            <!-- <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 1.55; radius-top: 1.05; height: 2.9; open-ended: true" opacity="0.5" position="-2.4 -1.3 -0.08" rotation="0 -3 80" heat-map="#helloWorldCanvas"></a-entity> -->
-            <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 2; radius-top: 1.05; height: 6; open-ended: true" opacity="0.5" position="-0.7 -1.525 -0.08" rotation="0 -2 80" heat-map="#helloWorldCanvas"></a-entity>
+            <a-text id="temperaturelbl1" rotation="-40 0 0" position="-0.5 1.4 -1.2" color="white" scale="2 2 2" value="- C"></a-text>
+            <a-plane id="temperatureBoard1" rotation="-40 0 0" position="0 1.2 -1.4" height="0.4" width="1.8" opacity="0.8" color="blue" scale="2 2 2" value="- C"></a-plane>
+
+            <a-text id="eventlbl1" rotation="-40 0 0" position="-0.5 1.2 -0.4" color="white" scale="1 1 1" value="NORMAL"></a-text>
+            <a-plane id="eventBoard1" rotation="-40 0 0" position="0 1.0 -0.6" height="0.2" width="1.8" opacity="0.8" color="black" scale="2 2 2" value="- C"></a-plane>
+
+            <a-entity material="opacity: 0.8; shader: flat; src: #heatMapCanvas1" geometry="primitive: cone; radius-bottom: 2; radius-top: 1.05; height: 6; open-ended: true" opacity="0.5" position="-0.7 -1.525 -0.08" rotation="0 -2 80" heat-map-a="#heatMapCanvas1"></a-entity>
         </a-marker>
         <a-marker id="viz2" preset='custom' type='pattern' url='./pattern-marker-2.patt'>
-            <a-sphere position="-2.8 0 0" radius="0.2" color="blue" opacity="0.5"></a-sphere>
-            <a-sphere position=" 3.6 0 0" radius="0.2" color="blue" opacity="0.5"></a-sphere>
-            <!-- <a-text id="marker2lbl" rotation="-90 0 0" position="1 0 0" color="black" scale="2 2 2" value="BLAH BLAH"></a-text> -->
-            <a-entity material="opacity: 0.7; shader: flat; src: #helloWorldCanvas" geometry="primitive: cone; radius-bottom: 1.05; radius-top: 2; height: 6; open-ended: true" opacity="0.5" position="0.7 -1.525 -0.08" rotation="0 2 100" heat-map="#helloWorldCanvas"></a-entity>
+            <!-- <a-text id="temperaturelbl2" rotation="-40 0 0" position="-0.5 1.2 -1" color="white" scale="2 2 2" value="- C"></a-text>
+            <a-plane id="temperatureBoard2" rotation="-40 0 0" position="0 0.8 -1.5" height="0.6" width="1.8" opacity="0.8" color="blue" scale="2 2 2" value="- C"></a-plane> -->
+            <a-text id="temperaturelbl2" rotation="-40 0 0" position="-0.5 1.4 -1.2" color="white" scale="2 2 2" value="- C"></a-text>
+            <a-plane id="temperatureBoard2" rotation="-40 0 0" position="0 1.2 -1.4"  height="0.4" width="1.8" opacity="0.8" color="blue" scale="2 2 2" value="- C"></a-plane>
+
+            <a-text id="eventlbl2" rotation="-40 0 0" position="-0.5 1.2 -0.4" color="white" scale="1 1 1" value="NORMAL"></a-text>
+            <a-plane id="eventBoard2" rotation="-40 0 0" position="0 1.0 -0.6" height="0.2" width="1.8" opacity="0.8" color="black" scale="2 2 2" value="- C"></a-plane>
+
+            <a-entity material="opacity: 0.8; shader: flat; src: #heatMapCanvas2" geometry="primitive: cone; radius-bottom: 1.05; radius-top: 2; height: 6; open-ended: true" opacity="0.5" position="0.7 -1.525 -0.08" rotation="0 2 100" heat-map-b="#heatMapCanvas2"></a-entity>
             </a-marker>
     <a-entity camera></a-entity>
 </a-scene>
@@ -49,8 +59,73 @@
     <button id="fullscreenbtn">Fullscreen</button> 
 </div>
 </body>
+<script>
+    window.heatValues = {x:0, y:0, z:0};
+    window.historyValues = {x:0, y:0, z:0};
+    window.realheat = true;
+    window.realTemperature = 25;
+
+    window.updateFakeEvent = (value) => {
+        if(value < 0.2) {
+            document.querySelector("#eventlbl1").setAttribute('value',`NORMAL`);
+            document.querySelector("#eventlbl2").setAttribute('value',`NORMAL`);
+            document.querySelector("#eventBoard1").setAttribute('color', 'black');
+            document.querySelector("#eventBoard2").setAttribute('color', 'black');
+        } else if(value < 0.7) {
+            document.querySelector("#eventlbl1").setAttribute('value',`WARNING`);
+            document.querySelector("#eventlbl2").setAttribute('value',`WARNING`);
+            document.querySelector("#eventBoard1").setAttribute('color', '#c07000');
+            document.querySelector("#eventBoard2").setAttribute('color', '#c07000');
+        } else {
+            document.querySelector("#eventlbl1").setAttribute('value',`CRITICAL`);
+            document.querySelector("#eventlbl2").setAttribute('value',`CRITICAL`);
+            document.querySelector("#eventBoard1").setAttribute('color', '#e00000');
+            document.querySelector("#eventBoard2").setAttribute('color', '#e00000');
+        }
+    }
+
+    window.setTemperature = (value) => {
+        document.querySelector("#temperaturelbl1").setAttribute('value',`${value.toFixed(1)} C`);
+        document.querySelector("#temperaturelbl2").setAttribute('value',`${value.toFixed(1)} C`);
+        const colorHue = 240 + Math.min(120, Math.max(0, 12 * (value-20) ));
+        const boardColor = `hsl(${colorHue}, 100%, 40%)`;
+
+        document.querySelector("#temperatureBoard1").setAttribute('color', boardColor);
+        document.querySelector("#temperatureBoard2").setAttribute('color', boardColor);
+    }
+
+    window.addEventListener('load', () => {
+        const graph = document.querySelector('#graph');
+
+        const calcValues = (val) => {
+            window.historyValues = {
+                x: 0.5 + 0.5 * Math.sin(val/10),
+                y: 0.5 + 0.5 * Math.sin(val/20),
+                z: 0.5 + 0.5 * Math.sin(val/13)
+            };
+
+            updateFakeEvent(window.historyValues.y);
+
+            window.setTemperature(25 + 6 * Math.sin(val/25));
+        }
+
+        graph.addEventListener('touchstart', (e) => {
+            calcValues(e.touches[0].clientX);
+            window.realheat = false;
+        });
+        graph.addEventListener('touchmove', (e) => {
+            calcValues(e.touches[0].clientX);
+        });
+        graph.addEventListener('touchend', (e) => {
+            window.historyValues = {x:0, y:0, z:0};
+            window.realheat = true;
+            window.setTemperature(window.realTemperature);
+            window.updateFakeEvent(window.heatValues.y);
+        });
+})
+</script>
 <script type="module">
     import {init} from './main.js';
-    //init();
+    init();
 </script>
 </html>

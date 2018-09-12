@@ -3,7 +3,6 @@ import {Thingy52Control} from './thingy52control.js';
 
 const thingy52 = new Thingy52Control();
 
-let viz = null;
 let graph = null;
 
 const drawdata = {
@@ -41,13 +40,8 @@ function toggleFullScreen() {
 export function init() {
     console.log("Init main");
 
-    viz = document.querySelector("#viz");
     graph = document.querySelector("#graph");
     
-    // const accelx = addBubble(1, -0.8, -1.3, '#00ff00');
-    // const accely = addBubble(0, -0.8, -1.3, '#00ff00');
-    // const accelz = addBubble(-1, -0.8, -1.3, '#00ff00');
-
     addGuide('zero_guide', {min:0,name:"ZERO"});
     addPen('x', {color:'#ff0000', name:'x', lineWidth:3});
     addPen('y', {color:'#00ff00', name:'y', lineWidth:3});
@@ -72,7 +66,10 @@ export function init() {
         if(!data) return;
 
         if(data.type === 'temperature') {
-            document.querySelector("#temperaturelbl").setAttribute('value',`${data.value.toFixed(1)} C`);
+            window.realTemperature = data.value;
+            if(window.realheat) {
+                window.setTemperature(window.realTemperature);
+            }
         } else if(data.type === 'acceleration') {
             addValue('x', data.value.x);
             addValue('y', data.value.y);
@@ -98,10 +95,11 @@ export function init() {
             addValue('accuy', accu.y);
             addValue('accuz', accu.z);
 
-            updateBubble(accelx, accu.x);
-            updateBubble(accely, accu.y);
-            updateBubble(accelz, accu.z);
+            window.heatValues.x = Math.min(accu.x,1);
+            window.heatValues.y = Math.min(accu.y,1);
+            window.heatValues.z = Math.min(accu.z,1);
 
+            window.updateFakeEvent(window.heatValues.y);
         }
     });
 
@@ -127,35 +125,6 @@ export function init() {
     requestAnimationFrame(_gameLoop);
 
 }
-
-function addBubble(x,y,z,color) {
-    if(!viz)return;
-    
-    let bubble = document.createElement('a-sphere');
-    bubble.setAttribute('position', `${x} ${y} ${z}`);
-    bubble.setAttribute('radius','0.2');
-    bubble.setAttribute('color',color);
-    bubble.setAttribute('transparent','true');
-    bubble.setAttribute('opacity','0.6');
-    
-    viz.appendChild(bubble);
-
-    return bubble;
-}
-
-function updateBubble(bubble, value) {
-    if(value < 0.5) {
-        bubble.setAttribute('radius', '0.2');
-        bubble.setAttribute('color', '#00ff00');
-    } else if(value < 2) {
-        bubble.setAttribute('radius', '0.3');
-        bubble.setAttribute('color', '#ffff00');
-    } else {
-        bubble.setAttribute('radius', '0.5');
-        bubble.setAttribute('color', '#ff0000');
-    }
-}
-
 
 // drawing funcs
 function addPen(id, options)  {
