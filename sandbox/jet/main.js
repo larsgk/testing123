@@ -52,7 +52,6 @@ export function init() {
     addPen('accuz', {color:'#8080ff', name:'accuz', lineWidth:1});
 
     const scanbtn = document.querySelector("#scanbtn");
-    console.log(scanbtn, thingy52);
     scanbtn.addEventListener('click', () => thingy52.scan());
 
     const fullscreenbtn = document.querySelector("#fullscreenbtn");
